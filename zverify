@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+import sys, argparse, zcode, Tkinter, tkFileDialog, tkMessageBox
+
+root = Tkinter.Tk()
+root.withdraw()
+
+parser = argparse.ArgumentParser(description = 'Verify the integrity of \
+                                                a Z-code file.')
+parser.add_argument('input', metavar = 'story',
+                    type = argparse.FileType('rb'),
+                    help = 'Z-code story file',
+                    nargs = '?',
+                    default = None)
+inputfile = parser.parse_args().input
+if (inputfile == None):
+    inputfile = tkFileDialog.askopenfile(mode = 'rb',
+                                         filetypes = [('Z-code files',
+                                                       '.z[1-8] .zlb \
+                                                        .zblorb .dat'),
+                                                      ('All files', '*')])
+if (inputfile == None):
+    sys.stderr.write('No story file chosen.\n')
+    sys.exit()
+
+zstory = zcode.StoryFile(inputfile)
+
+inputfile.close()
+if zstory.verify():
+    tkMessageBox.showinfo('zverify', 'Story file verified as intact.')
+else:
+    tkMessageBox.showerror('zverify', 'Story file not verified as intact.')
+sys.exit()
