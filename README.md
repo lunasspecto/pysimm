@@ -15,6 +15,6 @@ file's checksum.
 ### Feature wishlist:
 * Support for Z-code versions 1 through 8, eventually including even version
 6.
-* Blorb support
+* Blorb support, including blorb graphics
 * Optional sound support throu AVbin
 * Quetzal save file support
