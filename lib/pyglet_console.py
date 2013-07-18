@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # pyglet_console: to become a module for providing a pyglet console interface
