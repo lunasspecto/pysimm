@@ -2,7 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from distutils.core import setup
+
+try:
+    from setuptools import setup
+except:
+    from distutils.core import setup
+
 try:
     import py2exe
     py2exe_avail = True
