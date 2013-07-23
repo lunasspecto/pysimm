@@ -1,31 +1,47 @@
 #!/usr/bin/env python
 import sys
 import argparse
-import Tkinter
-import tkFileDialog
-import tkMessageBox
+
 from pysimm import zcode
 
-root = Tkinter.Tk()
-root.withdraw()
+try:
+    from Tkinter import Tk
+    import tkFileDialog
+    import tkMessageBox
+    tk_avail = True
+except:
+    tk_avail = False
 
 parser = argparse.ArgumentParser(description = 'Verify the integrity of \
                                                 a Z-code file.')
-parser.add_argument('input', metavar = 'story',
-                    type = argparse.FileType('rb'),
-                    help = 'Z-code story file',
-                    nargs = '?',
-                    default = None)
+
+input_arg_keys = {'metavar': 'story',
+            'type': argparse.FileType('rb'),
+            'help': 'Z-code story file.',
+            'default': None}
+if tk_avail:
+    input_arg_keys['help'] = ' '.join((input_arg_keys['help'],
+               'A file dialog will appear if this argument is not provided.'))
+    input_arg_keys['nargs'] = '?'
+parser.add_argument('input', **input_arg_keys)
 inputfile = parser.parse_args().input
-if (inputfile == None):
-    inputfile = tkFileDialog.askopenfile(mode = 'rb',
-                                         filetypes = [('Z-code files',
-                                                       '.z[1-8] .zlb \
-                                                        .zblorb .dat'),
-                                                      ('All files', '*')])
-if (inputfile == None):
-    sys.stderr.write('No story file chosen.\n')
-    sys.exit()
+if inputfile == None:
+    if tk_avail:
+        Tk().withdraw()
+        inputfile = tkFileDialog.askopenfile(mode = 'rb',
+                                             filetypes = [('Z-code files',
+                                                           '.z1 .z2 .z3 .z4 \
+                                                            .z5 .z6 .z7 .z8 \
+                                                            .zlb. zblorb \
+                                                            .dat'),
+                                                          ('All files', '*')])
+        if inputfile == None:
+            tkMessageBox.showerror(title='zverify',
+                                   message='No story file chosen.')
+            sys.exit()
+    else:
+        sys.stderr.write('No story file chosen.\n')
+        sys.exit()
 
 zstory = zcode.StoryFile(inputfile)
 

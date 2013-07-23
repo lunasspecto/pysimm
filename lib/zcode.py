@@ -24,7 +24,7 @@ class StoryFile(array):
 
         if self.version > 8:
             raise ZCodeError(
-               'Z-code file reports invalid version {}.'.format(self.version))
+                'Z-code file reports invalid version {}.'.format(self.version))
 
         if self.version > 2:
             self.storedlength = catbytes(self[0x1a:0x1c])
