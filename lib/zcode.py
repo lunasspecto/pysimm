@@ -169,13 +169,13 @@ class StoryFile(array):
                                      0x13: 'get_wind_prop',
                                      0x14: 'scroll_window',
                                      0x15: 'pop_stack',
-                                     ox16: 'read_mouse',
-                                     ox17: 'mouse_window',
-                                     ox18: 'push_stack',
-                                     ox19: 'push_wind_prop',
-                                     ox1a: 'print_form',
-                                     ox1b: 'make_menu',
-                                     ox1c: 'picture_table'})
+                                     0x16: 'read_mouse',
+                                     0x17: 'mouse_window',
+                                     0x18: 'push_stack',
+                                     0x19: 'push_wind_prop',
+                                     0x1a: 'print_form',
+                                     0x1b: 'make_menu',
+                                     0x1c: 'picture_table'})
 
     def packedtobyte(self, packed):
         if self.version < 4:
