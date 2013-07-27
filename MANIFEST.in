@@ -1,2 +1,2 @@
-include README.md zverify *.py
+include README zverify *.py
 recursive-include lib *.py
