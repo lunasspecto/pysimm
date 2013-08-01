@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from array import array
+from treatyofbabel.wrappers import blorb
 
 class ZCodeError(Exception):
     pass
@@ -12,8 +13,12 @@ class StoryFile(array):
     # Create the StoryFile object as a byte array
 
     def __init__(self, loadedfile):
-
-        for line in loadedfile:
+        file_data = loadedfile.read()
+        if blorb.claim_story_file(file_data):
+            file_data = blorb.get_story_file(file_data)
+        else:
+            pass
+        for line in file_data:
             self.fromstring(line)
             if len(self) > 0x7d000:
                 raise ZCodeError(

@@ -3,12 +3,12 @@ import sys
 import argparse
 
 from pysimm import zcode
-from treatyofbabel import babel
+from treatyofbabel.wrappers import blorb
 from os.path import abspath, basename, exists
 
 try:
     from Tkinter import Tk
-    from tkFileDialog import askopenfilename
+    from tkFileDialog import askopenfile
     from tkMessageBox import showinfo, showerror
     tk_avail = True
 except:
@@ -30,44 +30,34 @@ parser = argparse.ArgumentParser(description = 'Verify the integrity of a \
                                                 Z-code file.')
 
 input_arg_keys = {'metavar': 'story',
-                  'type': str,
+                  'type': argparse.FileType('rb'),
                   'help': 'Z-code story file.',
                   'default': None}
 if tk_avail:
     input_arg_keys['help'] = ' '.join((input_arg_keys['help'],
                'A file dialog will appear if this argument is not provided.'))
     input_arg_keys['nargs'] = '?'
-parser.add_argument('input', **input_arg_keys)
-inputpath = parser.parse_args().input
+parser.add_argument('story', **input_arg_keys)
+story = parser.parse_args().story
 
 if tk_avail:
     Tk().withdraw()
 
-if inputpath == None:
+if story == None:
     if tk_avail:
-        inputpath = askopenfilename(title = 'zverify',
-                                    filetypes = [('Z-code files',
-                                                  '.z1 .z2 .z3 .z4 .z5 .z6 \
-                                                   .z7 .z8 .zlb .zblorb .dat'),
-                                                 ('All files', '*')])
-if inputpath:
-    pass
+        story = askopenfile(title = 'zverify', mode = 'rb',
+                            filetypes = [('Z-code files',
+                                          '.z1 .z2 .z3 .z4 .z5 .z6 \
+                                           .z7 .z8 .zlb .zblorb .dat'),
+                                         ('All files', '*')])
+    else:
+        pass
 else:
     print_or_msgbox('No story file chosen.')
     sys.exit()
 
-inputpath = abspath(inputpath)
-if exists(inputpath):
-    format_ = babel.deduce_format(inputpath)
-    if (format_ == 'blorbed zcode') | (format == 'zcode'):
-        zstory = zcode.StoryFile(babel.get_story(inputpath))
-    else:
-        print_or_msgbox(' '.join((inputpath, 'is not a valid Z-code file.')))
-        sys.exit()
-else:
-    print_or_msgbox(' '.join(('The input file', inputpath,
-                              'either does not exist or cannot be read.')))
-    sys.exit()
+zstory = zcode.StoryFile(story)
+story.close()
 
 if zstory.verify():
     print_or_msgbox('Story file verified as intact.', 'info')
